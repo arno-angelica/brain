@@ -76,4 +76,16 @@ public class TransactionMutualBO implements Serializable {
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
+
+    @Override
+    public String toString() {
+        return "TransactionMutualBO{" +
+                "groupId='" + groupId + '\'' +
+                ", command='" + command + '\'' +
+                ", type='" + type + '\'' +
+                ", singleId='" + singleId + '\'' +
+                ", endFlag=" + endFlag +
+                ", count=" + count +
+                '}';
+    }
 }

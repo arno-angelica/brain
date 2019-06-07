@@ -3,11 +3,13 @@ package com.arno.manager.aspect;
 import com.arno.commom.constant.TransactionConstant;
 import com.arno.manager.annotation.Distributed;
 import com.arno.manager.transaction.DealTransaction;
-import com.arno.manager.transaction.TransactionManager;
+import com.arno.manager.transaction.BrainTransactionManager;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.Ordered;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
@@ -19,7 +21,8 @@ import java.lang.reflect.Method;
  * @create Create in 2019/06/07 2019/6/7
  **/
 @Aspect
-public class DistributedAspect {
+@Component
+public class DistributedAspect implements Ordered {
 
     @Around("@annotation(com.arno.manager.annotation.Distributed)")
     public void invoke(ProceedingJoinPoint joinPoint) {
@@ -28,23 +31,27 @@ public class DistributedAspect {
         Distributed distributed = method.getAnnotation(Distributed.class);
         String groupId;
         if (distributed.isStart()) {
-            groupId = TransactionManager.createTransactionGroup();
+            groupId = BrainTransactionManager.createTransactionGroup();
         } else {
-            groupId = TransactionManager.getCurrentGroupId();
+            groupId = BrainTransactionManager.getCurrentGroupId();
         }
-        DealTransaction transaction = TransactionManager.createTransaction(groupId);
+        DealTransaction transaction = BrainTransactionManager.createTransaction(groupId);
         if (transaction != null) {
             try {
                 joinPoint.proceed();
-                TransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.COMMIT);
+                BrainTransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.COMMIT);
             } catch (Exception e) {
-                TransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.ROLLBACK);
+                BrainTransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.ROLLBACK);
                 e.printStackTrace();
             } catch (Throwable t) {
-                TransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.ROLLBACK);
+                BrainTransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.ROLLBACK);
                 t.printStackTrace();
             }
         }
     }
 
+    @Override
+    public int getOrder() {
+        return 10000;
+    }
 }

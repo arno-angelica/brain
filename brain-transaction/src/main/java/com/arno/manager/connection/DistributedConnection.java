@@ -73,8 +73,17 @@ public class DistributedConnection implements Connection {
 
     @Override
     public void close() throws SQLException {
-        connection.close();
     }
+
+    @Override
+    public void setAutoCommit(boolean autoCommit) throws SQLException {
+        if (connection != null) {
+            connection.setAutoCommit(false);
+        }
+    }
+    /**
+     * default
+     */
 
     @Override
     public Statement createStatement() throws SQLException {
@@ -96,15 +105,12 @@ public class DistributedConnection implements Connection {
         return connection.nativeSQL(sql);
     }
 
-    @Override
-    public void setAutoCommit(boolean autoCommit) throws SQLException {
-        connection.setAutoCommit(autoCommit);
-    }
 
     @Override
     public boolean getAutoCommit() throws SQLException {
         return connection.getAutoCommit();
     }
+
 
     @Override
     public boolean isClosed() throws SQLException {
@@ -330,4 +336,5 @@ public class DistributedConnection implements Connection {
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
         return connection.isWrapperFor(iface);
     }
+
 }

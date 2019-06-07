@@ -13,8 +13,11 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Component;
 
-public class NettyClient {
+@Component
+public class NettyClient implements InitializingBean {
 
     private NettyClientHandler client = null;
 
@@ -48,5 +51,10 @@ public class NettyClient {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        start("localhost", 8080);
     }
 }

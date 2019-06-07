@@ -78,8 +78,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             TransactionMutualDTO result = new TransactionMutualDTO();
             result.setGroupId(groupId);
             // 如果标识为true, 且事务组数量和map中存放的数量相同
-            if (IS_END_MAP.get(groupId) && TRANSACTION_TYPE_MAP.get(groupId)
-                    .equals(TRANSACTION_TYPE_MAP.get(groupId).size())) {
+            if (IS_END_MAP.get(groupId) != null && IS_END_MAP.get(groupId)
+                    && TRANSACTION_TYPE_MAP.get(groupId) != null && COUNT_MAP.get(groupId) != null
+                    && COUNT_MAP.get(groupId).equals(TRANSACTION_TYPE_MAP.get(groupId).size())) {
                 // 如果事务组中存在一条为 rollback 的，则全部回滚
                 if (TRANSACTION_TYPE_MAP.get(groupId).contains(TransactionConstant.ROLLBACK)) {
                     result.setCommand(TransactionConstant.ROLLBACK);

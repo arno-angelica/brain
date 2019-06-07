@@ -5,6 +5,8 @@ import com.arno.commom.pojo.TransactionMutualBO;
 import com.arno.manager.netty.NettyClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,17 +19,23 @@ import java.util.UUID;
  * @className TransactionManager
  * @create Create in 2019/06/07 2019/6/7
  **/
-public class TransactionManager {
+@Component
+public class BrainTransactionManager {
 
-    private static final Logger log = LoggerFactory.getLogger(TransactionManager.class);
+    private static final Logger log = LoggerFactory.getLogger(BrainTransactionManager.class);
 
-    private static NettyClient client = new NettyClient();
     private static ThreadLocal<DealTransaction> current = new ThreadLocal<>();
     private static ThreadLocal<String> currentGroupId = new ThreadLocal<>();
     private static ThreadLocal<Integer> transactionCount = new ThreadLocal<>();
 
     public static Map<String, DealTransaction> LB_TRANSACION_MAP = new HashMap<>();
 
+    private static NettyClient nettyClient;
+
+    @Autowired
+    public void setClient(NettyClient client) {
+        BrainTransactionManager.nettyClient = client;
+    }
     /**
      * 创建事务组，并且返回groupId
      *
@@ -38,7 +46,7 @@ public class TransactionManager {
         TransactionMutualBO req = new TransactionMutualBO();
         req.setGroupId(groupId);
         req.setCommand(TransactionConstant.CREATE);
-        client.send(req);
+        nettyClient.send(req);
         log.info("创建事务组...");
 
         currentGroupId.set(groupId);
@@ -78,7 +86,7 @@ public class TransactionManager {
         data.setSingleId(dealTransaction.getTransactionId());
         data.setEndFlag(isEnd);
         data.setType(transactionType);
-        client.send(data);
+        nettyClient.send(data);
         log.info("添加事务...");
         return dealTransaction;
     }
