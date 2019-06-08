@@ -24,6 +24,17 @@ public class TestService {
         demoDao.insert("server2");
     }
  }
+ @Service
+public class TestService {
+   @Distributed(isStart = true)
+   @Transactional
+   public void test() {
+       demoDao.insert("server1");
+       // 调用 server2，使用 com.arno.manager.util.HttpClient
+       HttpClient.get("http://localhost:8082/server2/test");
+       int i = 100/0;
+   }
+}
 ```
 2. spring 需要扫描 com.arno.manager 下的文件
 以spring boot 为例

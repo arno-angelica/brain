@@ -22,6 +22,7 @@ public class DataSourceAspect {
 
     @Around("execution(* javax.sql.DataSource.getConnection(..))")
     public Connection process(ProceedingJoinPoint point) throws Throwable {
+        // 如果
         if (BrainTransactionManager.getCurrent() != null) {
             return new DistributedConnection((Connection) point.proceed(), BrainTransactionManager.getCurrent());
         } else {
