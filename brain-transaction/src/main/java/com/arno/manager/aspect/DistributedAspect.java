@@ -24,29 +24,43 @@ import java.lang.reflect.Method;
 @Component
 public class DistributedAspect implements Ordered {
 
+    /**
+     * 处理带有 Distributed 注解的方法
+     *
+     * @param joinPoint
+     */
     @Around("@annotation(com.arno.manager.annotation.Distributed)")
     public void invoke(ProceedingJoinPoint joinPoint) {
+        // 取到 MethodSignature
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        // 拿到 Method
         Method method = signature.getMethod();
+        // 取到方法上面的 Distributed 注解
         Distributed distributed = method.getAnnotation(Distributed.class);
         String groupId;
+        // 如果为事务的开始节点
         if (distributed.isStart()) {
+            // 创建事务组
             groupId = BrainTransactionManager.createTransactionGroup();
         } else {
+            // 创建事务
             groupId = BrainTransactionManager.getCurrentGroupId();
         }
+        // 定义 DealTransaction 对象
         DealTransaction transaction = BrainTransactionManager.createTransaction(groupId);
-        if (transaction != null) {
-            try {
-                joinPoint.proceed();
-                BrainTransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.COMMIT);
-            } catch (Exception e) {
-                BrainTransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.ROLLBACK);
-                e.printStackTrace();
-            } catch (Throwable t) {
-                BrainTransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.ROLLBACK);
-                t.printStackTrace();
-            }
+        try {
+            // 执行方法
+            joinPoint.proceed();
+            // 方法执行成功，则告知事务管理器，该事务节点为 commit
+            BrainTransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.COMMIT);
+        } catch (Exception e) {
+            // 方法执行异常，则告知事务管理器，该事务节点为 rollback
+            BrainTransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.ROLLBACK);
+            e.printStackTrace();
+        } catch (Throwable t) {
+            // 方法执行异常，则告知事务管理器，该事务节点为 rollback
+            BrainTransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.ROLLBACK);
+            t.printStackTrace();
         }
     }
 

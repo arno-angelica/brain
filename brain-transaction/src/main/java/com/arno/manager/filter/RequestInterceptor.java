@@ -13,6 +13,7 @@ public class RequestInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 拦截请求，将 groupId 放入到该请求的 ThreadLocal 中
         String groupId = request.getHeader("groupId");
         String transactionCount = request.getHeader("transactionCount");
         BrainTransactionManager.setCurrentGroupId(groupId);

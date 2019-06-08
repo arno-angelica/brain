@@ -7,14 +7,20 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-
+/**
+ * @author LiuLQ
+ * @version 1.0.0
+ * @desc 请求工具
+ * @className HttpClient
+ * @create Create in 2019/06/07 2019/6/7
+ **/
 public class HttpClient {
 
     public static String get(String url) {
         String result = "";
         try {
             CloseableHttpClient httpClient = HttpClients.createDefault();
-
+            // 将事务组ID和子事务数量放入请求头，以便后面服务取
             HttpGet httpGet = new HttpGet(url);
             httpGet.addHeader("Content-type", "application/json");
             httpGet.addHeader("groupId", BrainTransactionManager.getCurrentGroupId());

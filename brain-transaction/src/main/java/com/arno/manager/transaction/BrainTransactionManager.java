@@ -23,12 +23,23 @@ import java.util.UUID;
 public class BrainTransactionManager {
 
     private static final Logger log = LoggerFactory.getLogger(BrainTransactionManager.class);
-
+    /**
+     * 存放 DealTransaction 对象
+     */
     private static ThreadLocal<DealTransaction> current = new ThreadLocal<>();
+    /**
+     * 存放事务组 ID
+     */
     private static ThreadLocal<String> currentGroupId = new ThreadLocal<>();
+    /**
+     * 存放子事务数量
+     */
     private static ThreadLocal<Integer> transactionCount = new ThreadLocal<>();
 
-    public static Map<String, DealTransaction> LB_TRANSACION_MAP = new HashMap<>();
+    /**
+     * 每组事务组的子事务存放器
+     */
+    public static Map<String, DealTransaction> TRANSACTION_MAP = new HashMap<>();
 
     private static NettyClient nettyClient;
 
@@ -62,7 +73,7 @@ public class BrainTransactionManager {
     public static DealTransaction createTransaction(String groupId) {
         String transactionId = UUID.randomUUID().toString();
         DealTransaction dealTransaction = new DealTransaction(groupId, transactionId);
-        LB_TRANSACION_MAP.put(groupId, dealTransaction);
+        TRANSACTION_MAP.put(groupId, dealTransaction);
         current.set(dealTransaction);
         addTransactionCount();
         log.info("创建事务...");
@@ -92,7 +103,7 @@ public class BrainTransactionManager {
     }
 
     public static DealTransaction getDealTransaction(String groupId) {
-        return LB_TRANSACION_MAP.get(groupId);
+        return TRANSACTION_MAP.get(groupId);
     }
 
     public static DealTransaction getCurrent() {

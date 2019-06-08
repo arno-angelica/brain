@@ -21,6 +21,11 @@ public class NettyClient implements InitializingBean {
 
     private NettyClientHandler client = null;
 
+    /**
+     * 等待事务管理器回调
+     * @param hostName
+     * @param port
+     */
     public void start(String hostName, Integer port) {
         client = new NettyClientHandler();
         Bootstrap b = new Bootstrap();
@@ -44,6 +49,10 @@ public class NettyClient implements InitializingBean {
         }
     }
 
+    /**
+     * 发送数据给事务管理器
+     * @param req
+     */
     public void send(TransactionMutualBO req) {
         try {
             String reqStr = JSONObject.toJSONString(req);

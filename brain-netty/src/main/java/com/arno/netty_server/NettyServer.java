@@ -19,6 +19,11 @@ import io.netty.handler.codec.string.StringEncoder;
  **/
 public class NettyServer {
 
+    /**
+     * 事务管理器的服务端定义
+     * @param hostName
+     * @param port
+     */
     public void start(String hostName, int port) {
         try {
             final ServerBootstrap bootstrap = new ServerBootstrap();

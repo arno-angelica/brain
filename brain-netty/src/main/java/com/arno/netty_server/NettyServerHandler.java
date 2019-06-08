@@ -30,8 +30,17 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     private static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
+    /**
+     * 存放每组事务组中子事务是提交还是回滚
+     */
     private static Map<String, ArrayList<String>> TRANSACTION_TYPE_MAP = new HashMap<>();
+    /**
+     * 存放每组事务的结束事务
+     */
     private static Map<String, Boolean> IS_END_MAP = new HashMap<>();
+    /**
+     * 存放每组事务组的数量
+     */
     private static Map<String, Integer> COUNT_MAP = new HashMap<>();
 
     @Override

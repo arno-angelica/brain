@@ -20,8 +20,16 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Distributed {
 
+    /**
+     * 是否为事务开始的节点
+     * @return
+     */
     boolean isStart() default false;
 
+    /**
+     * 是否为事务结束的节点
+     * @return
+     */
     boolean isEnd() default false;
 
     Class<? extends Throwable>[] rollbackFor() default {};

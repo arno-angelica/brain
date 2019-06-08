@@ -21,6 +21,12 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         context = ctx;
     }
 
+    /**
+     * 读取事务管理器回调数据，并处理
+     * @param ctx
+     * @param msg
+     * @throws Exception
+     */
     @Override
     public synchronized void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         TransactionMutualDTO result = JSON.parseObject((String) msg, TransactionMutualDTO.class);
@@ -29,7 +35,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         String groupId = result.getGroupId();
         String command = result.getCommand();
         LOGGER.info("接收command:" + command);
-        // 对事务进行操作
+        // 根据回调的 command 做回滚或提交
         DealTransaction dealTransaction = BrainTransactionManager.getDealTransaction(groupId);
         if (command.equals(TransactionConstant.ROLLBACK)) {
             dealTransaction.setType(TransactionConstant.ROLLBACK);

@@ -37,12 +37,14 @@ public class DistributedConnection implements Connection {
     public DistributedConnection() {}
 
     public DistributedConnection(Connection connection, DealTransaction dealTransaction) {
+        // 定义数据库连接
         this.connection = connection;
         this.dealTransaction = dealTransaction;
     }
 
     @Override
     public void commit() throws SQLException {
+        // 新启动线程去等待事务管理器回调唤醒任务，已做提交或回滚
         new Thread(() -> {
             try {
                 dealTransaction.getTask().waitTask();
@@ -60,6 +62,7 @@ public class DistributedConnection implements Connection {
 
     @Override
     public void rollback() throws SQLException {
+        // 新启动线程去等待事务管理器回调唤醒任务，已做回滚
         new Thread(() ->{
                 try {
                     dealTransaction.getTask().waitTask();
@@ -73,10 +76,12 @@ public class DistributedConnection implements Connection {
 
     @Override
     public void close() throws SQLException {
+        // 该方法不做实现，手动关闭连接
     }
 
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
+        // 将自动提交置位false,以免回调提交时状态为已提交而导致不能提交
         if (connection != null) {
             connection.setAutoCommit(false);
         }
