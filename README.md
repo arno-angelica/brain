@@ -14,19 +14,19 @@
 
 大概流程如下
 
-![流程](.\image\流程.png)
+![流程](https://github.com/chaxiaoer/brain/tree/master/image/流程.png)
 
 ### 原始逻辑
 
 **大概的画一下，并不是非常细致**
 
-![流程](.\image\原始逻辑.png)
+![流程](https://github.com/chaxiaoer/brain/tree/master/image/原始逻辑.png)
 
 ### 现在逻辑
 
 **大概的画一下，并不是非常细致**
 
-![流程](.\image\现有逻辑.png)
+![流程](https://github.com/chaxiaoer/brain/tree/master/image/现有逻辑.png)
 
 ### 使用方式
 1. 需要开启分布式事务的方法加入 Distributed 和 Spring 的 Transaction 注解
