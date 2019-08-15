@@ -7,6 +7,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+
 /**
  * @author LiuLQ
  * @version 1.0.0
@@ -22,7 +23,7 @@ public class HttpClient {
             CloseableHttpClient httpClient = HttpClients.createDefault();
             // 将事务组ID和子事务数量放入请求头，以便后面服务取
             HttpGet httpGet = new HttpGet(url);
-            httpGet.addHeader("Content-type", "application/json");
+            httpGet.addHeader("Content-type", "application/json; charset=utf-8");
             httpGet.addHeader("groupId", BrainTransactionManager.getCurrentGroupId());
             httpGet.addHeader("transactionCount", String.valueOf(BrainTransactionManager.getTransactionCount()));
             CloseableHttpResponse response = httpClient.execute(httpGet);
@@ -33,7 +34,7 @@ public class HttpClient {
             response.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("request error");
         }
 
         return result;

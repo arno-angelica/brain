@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: serviceA
+server:
+  port: 8015
+
+druid:
+  url: jdbc:mysql://localhost:3306/person?characterEncoding=UTF-8&autoReconnect=true&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false
+  driverClass: com.mysql.cj.jdbc.Driver
+  username: root
+  password: root
+  initialSize: 5
+  minIdle: 1
+  maxActive: 100
+  testOnBorrow: true
+  validationQuery: SELECT 1
+mybatis:
+  type-aliases-package: com.example.testb.dao.model
+  mapper-locations: classpath:sqlmap/*.xml

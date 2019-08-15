@@ -53,14 +53,10 @@ public class DistributedAspect implements Ordered {
             joinPoint.proceed();
             // 方法执行成功，则告知事务管理器，该事务节点为 commit
             BrainTransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.COMMIT);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // 方法执行异常，则告知事务管理器，该事务节点为 rollback
             BrainTransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.ROLLBACK);
             e.printStackTrace();
-        } catch (Throwable t) {
-            // 方法执行异常，则告知事务管理器，该事务节点为 rollback
-            BrainTransactionManager.addTransaction(transaction, distributed.isEnd(), TransactionConstant.ROLLBACK);
-            t.printStackTrace();
         }
     }
 
